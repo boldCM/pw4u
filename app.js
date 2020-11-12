@@ -3,6 +3,19 @@ const { getPassword, setPassword } = require("./lib/passwords");
 const { askForMasterPassword } = require("./lib/questions");
 const { isMasterPasswordCorrect } = require("./lib/validation");
 
+const MongoClient = require("mongodb").MongoClient;
+const assert = require("assert");
+
+// Connection URL
+const url =
+  "mongodb+srv://Caro:GJdA7hLcePYMLha2@cluster0.qazjp.mongodb.net/pw4u?retryWrites=true";
+
+// Use connect method to connect to the Server
+MongoClient.connect(url, function (err, client) {
+  assert.equal(null, err);
+  client.close();
+});
+
 async function run() {
   const masterPassword = await askForMasterPassword();
 
