@@ -13,7 +13,40 @@ const url =
 // Use connect method to connect to the Server
 MongoClient.connect(url, function (err, client) {
   assert.equal(null, err);
-  client.close();
+  const db = client.db("pw4u");
+
+  db.collection("passwords")
+    .insertOne({
+      pw: "SomePW",
+      value: "4567",
+    })
+    .then(function (result) {
+      // process result
+    });
+
+  const cursor = db.collection("passwords").find({});
+
+  function iterateFunc(doc) {
+    console.log(JSON.stringify(doc, null, 4));
+  }
+
+  function errorFunc(error) {
+    console.log(error);
+  }
+
+  cursor.forEach(iterateFunc, errorFunc);
+
+  db.collection("passwords")
+    .insertMany([
+      { title: "journal", pw: 25, name: "journalname" },
+      { title: "facebook", pw: 50, name: "facbookName" },
+      { title: "klo", pw: 100, name: "paper" },
+    ])
+    .then(function (result) {
+      // process result
+    });
+
+  // client.close();
 });
 
 async function run() {
