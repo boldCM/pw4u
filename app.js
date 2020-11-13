@@ -1,8 +1,14 @@
 const { readCommandLineArguments } = require("./lib/commandLine");
-const { getPassword, setPassword, updatePassword } = require("./lib/passwords");
+const {
+  getPassword,
+  setPassword,
+  updatePassword,
+  deleteItem,
+} = require("./lib/passwords");
 const {
   askForMasterPassword,
   askForUpdatePassword,
+  askForDelete,
 } = require("./lib/questions");
 const { isMasterPasswordCorrect } = require("./lib/validation");
 const { connect, close } = require("./lib/database");
@@ -44,6 +50,12 @@ async function run() {
   if (updatePasswordValue.includes("yes")) {
     await updatePassword(passwordName, newPasswordValue);
     console.log("Your password is updated");
+  }
+
+  const deleteFullItem = await askForDelete();
+  if (deleteFullItem.includes("yes")) {
+    await deleteItem(passwordName);
+    console.log("Your password and its name are deleted");
   }
   await close();
 }
