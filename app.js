@@ -1,6 +1,9 @@
 const { readCommandLineArguments } = require("./lib/commandLine");
-const { getPassword, setPassword } = require("./lib/passwords");
-const { askForMasterPassword } = require("./lib/questions");
+const { getPassword, setPassword, updatePassword } = require("./lib/passwords");
+const {
+  askForMasterPassword,
+  askForUpdatePassword,
+} = require("./lib/questions");
 const { isMasterPasswordCorrect } = require("./lib/validation");
 const { connect, close } = require("./lib/database");
 const dotenv = require("dotenv");
@@ -34,6 +37,13 @@ async function run() {
   } else {
     const passwordValue = await getPassword(passwordName);
     console.log(`Your password is ${passwordValue} 🎉`);
+  }
+
+  const updatePasswordValue = await askForUpdatePassword();
+
+  if (updatePasswordValue.includes("yes")) {
+    await updatePassword(passwordName, newPasswordValue);
+    console.log("Your password is updated");
   }
   await close();
 }
