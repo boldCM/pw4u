@@ -4,11 +4,13 @@ const {
   setPassword,
   updatePassword,
   deleteItem,
+  checkForPassword,
 } = require("./lib/passwords");
 const {
   askForMasterPassword,
   askForUpdatePassword,
   askForDelete,
+  askForNewItem,
 } = require("./lib/questions");
 const { isMasterPasswordCorrect } = require("./lib/validation");
 const { connect, close } = require("./lib/database");
@@ -37,19 +39,24 @@ async function run() {
     return process.exit(9);
   }
 
-  if (newPasswordValue) {
-    await setPassword(passwordName, newPasswordValue);
-    console.log(`Password ${passwordName} set 🎉`);
-  } else {
-    const passwordValue = await getPassword(passwordName);
-    console.log(`Your password is ${passwordValue} 🎉`);
+  if (!(await checkForPassword(passwordName))) {
+    console.log("Password/Item is not existing, choose Set to add it");
+    const newItemValue = await askForNewItem();
+    if (newItemValue.includes("yes")) {
+      await setPassword(passwordName, newPasswordValue);
+      console.log(`Password ${passwordName} set 🎉`);
+    }
   }
 
-  const updatePasswordValue = await askForUpdatePassword();
+  if (passwordName) {
+    const passwordValue = await getPassword(passwordName);
+    console.log(`Your password is ${passwordValue} 🎉`);
 
-  if (updatePasswordValue.includes("yes")) {
-    await updatePassword(passwordName, newPasswordValue);
-    console.log("Your password is updated");
+    const updatePasswordValue = await askForUpdatePassword();
+    if (updatePasswordValue.includes("yes")) {
+      await updatePassword(passwordName, newPasswordValue);
+      console.log("Your password is updated");
+    }
   }
 
   const deleteFullItem = await askForDelete();
