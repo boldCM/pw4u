@@ -39,7 +39,7 @@ app.post("/api/passwords", async (request, response) => {
   }
 });
 
-app.delete("/api/passwords/:name", async (request, response) => {
+app.delete("/api/passwords/:passwordName", async (request, response) => {
   try {
     const { passwordName } = request.params;
     const result = await deleteItem(passwordName);
