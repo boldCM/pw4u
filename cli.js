@@ -21,10 +21,7 @@ dotenv.config();
 async function run() {
   try {
     console.log("Connecting to database...");
-    await connect(
-      `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.qazjp.mongodb.net/pw4u?retryWrites=true`,
-      "pw4u"
-    );
+    await connect(process.env.DB_URI, process.env.DB_DBNAME);
     console.log("Connected to database 🎉");
 
     const masterPassword = await askForMasterPassword();
