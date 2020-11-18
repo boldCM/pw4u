@@ -1,27 +1,15 @@
 import logo from "./logo.svg";
 import "./App.css";
 import { getPassword } from "./api/passwords";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useAsync from "./hooks/useAsync";
 
 function App() {
-  const [password, setPassword] = useState(null);
   const [inputValue, setInputValue] = useState("");
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
 
-  const doFetch = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const newPassword = await getPassword(inputValue);
-      setPassword(newPassword);
-    } catch (error) {
-      console.error(error);
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data, loading, error, doFetch } = useAsync(() =>
+    getPassword(inputValue)
+  );
 
   return (
     <div className="App">
@@ -31,8 +19,6 @@ function App() {
         <form
           onSubmit={(event) => {
             event.preventDefault();
-            // setInputValue(event.target.value);
-            // console.log(inputValue);
             doFetch();
             setInputValue("");
           }}
@@ -46,7 +32,7 @@ function App() {
           />
         </form>
         {loading && <div>Loading...</div>}
-        <div>{password}</div>
+        <div>{data}</div>
       </header>
     </div>
   );
