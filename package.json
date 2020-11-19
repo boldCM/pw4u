@@ -22,7 +22,8 @@
     "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run storybook\" ",
     "client": "cd client && npm start",
     "postinstall": "cd client && npm install",
-    "storybook": "cd client && npm run storybook"
+    "storybook": "cd client && npm run storybook",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
