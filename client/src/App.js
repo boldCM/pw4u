@@ -1,38 +1,42 @@
 import logo from "./logo.svg";
 import "./App.css";
 import { getPassword } from "./api/passwords";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useAsync from "./hooks/useAsync";
+import { useForm } from "react-hook-form";
 
 function App() {
-  const [password, setPassword] = useState(null);
   const [inputValue, setInputValue] = useState("");
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
 
-  const doFetch = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const newPassword = await getPassword(inputValue);
-      setPassword(newPassword);
-    } catch (error) {
-      console.error(error);
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data, loading, error, doFetch } = useAsync(() =>
+    getPassword(inputValue)
+  );
+
+  const { register, handleSubmit, watch, errors } = useForm();
+  const onSubmit = (data) => console.log(data);
+
+  console.log(watch("example"));
 
   return (
     <div className="App">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* register your input into the hook by invoking the "register" function */}
+        <input name="example" defaultValue="test" ref={register} />
+
+        {/* include validation with required or other standard HTML validation rules */}
+        <input name="exampleRequired" ref={register({ required: true })} />
+        {/* errors will return when field validation fails  */}
+        {errors.exampleRequired && <span>This field is required</span>}
+
+        <input type="submit" />
+      </form>
+      {/* ursprünglicher Code: */}
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         {error && <div>{error.message}</div>}
         <form
           onSubmit={(event) => {
             event.preventDefault();
-            // setInputValue(event.target.value);
-            // console.log(inputValue);
             doFetch();
             setInputValue("");
           }}
@@ -46,7 +50,7 @@ function App() {
           />
         </form>
         {loading && <div>Loading...</div>}
-        <div>{password}</div>
+        <div>{data}</div>
       </header>
     </div>
   );
