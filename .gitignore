@@ -8,6 +8,8 @@ lerna-debug.log*
 .masterPassword
 node_modules
 .env
+client/build
+client/storybook-static 
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
